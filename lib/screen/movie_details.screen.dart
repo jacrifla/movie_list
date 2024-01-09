@@ -12,76 +12,83 @@ class MovieDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(movie.title),
+        title: Text('Detalhes do Filme'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.network(
-                '${movie.posterUrl}',
-                width: 300,
-                height: 450,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Title: ${movie.title}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Image.network(
+                    '${movie.posterUrl}',
+                    width: 300,
+                    height: 450,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              Text(
-                'Released: ${movie.released}',
-                style: TextStyle(
-                  fontSize: 16,
+                SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    '${movie.title}',
+                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              Text(
-                'Awards: ${movie.awards}',
-                style: TextStyle(
-                  fontSize: 16,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildDetail(
+                        'Diretor:', movie.director ?? 'Não disponível'),
+                    _buildDetail('Gênero:', movie.genre ?? 'Não disponível'),
+                  ],
                 ),
-              ),
-              Text(
-                'Director: ${movie.director}',
-                style: TextStyle(
-                  fontSize: 16,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildDetail('Duração:', movie.runtime ?? 'Não disponível'),
+                    _buildDetail(
+                        'Lançado:', movie.released ?? 'Não disponível'),
+                  ],
                 ),
-              ),
-              Text(
-                'Genre: ${movie.genre}',
-                style: TextStyle(
-                  fontSize: 16,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildDetail('Prêmios:', movie.awards ?? 'Não disponível'),
+                    _buildDetail('Avaliação do IMDb:',
+                        movie.imdbRating ?? 'Não disponível'),
+                  ],
                 ),
-              ),
-              Text(
-                'IMDb Rating: ${movie.imdbRating}',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Plot: ${movie.plot}',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Runtime: ${movie.runtime}',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ],
+                _buildDetail('Enredo:', movie.plot ?? 'Não disponível'),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDetail(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        SizedBox(height: 12),
+      ],
     );
   }
 }
