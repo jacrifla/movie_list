@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:save_movies/screen/movie_details.screen.dart';
 import '../data/database.dart';
 import '../models/movie.dart';
 import '../services/omdb_api_service.dart';
@@ -52,18 +53,52 @@ class _MovieListState extends State<MovieList> {
         },
       );
     } else {
-      String? posterUrl =
-          await OmdbApiService('e5f48ed3').getMoviePoster(title);
-      if (posterUrl != null) {
-        Movie newMovie = Movie(title: title, posterUrl: posterUrl);
-        await DatabaseHelper.instance.insertMovie(newMovie);
-        await refreshMovieList();
+      Map<String, dynamic>? movieDetails =
+          await OmdbApiService('e5f48ed3').getMovieDetailsAll(title);
 
-        print('Detalhes do filme adicionado:');
-        print('Título: $title');
-        print('URL do pôster: $posterUrl');
+      if (movieDetails != null) {
+        String? posterUrl = movieDetails['Poster'];
+        String? released = movieDetails['Released'];
+        String? genre = movieDetails['Genre'];
+        String? director = movieDetails['Director'];
+        String? plot = movieDetails['Plot'];
+        String? awards = movieDetails['Awards'];
+        String? runtime = movieDetails['Runtime'];
+        String? imdbRating = movieDetails['imdbRating'];
+
+        if (posterUrl != null &&
+            released != null &&
+            genre != null &&
+            director != null &&
+            plot != null &&
+            awards != null &&
+            runtime != null &&
+            imdbRating != null) {
+          Movie newMovie = Movie(
+            title: title,
+            posterUrl: posterUrl,
+            released: released,
+            genre: genre,
+            director: director,
+            plot: plot,
+            awards: awards,
+            runtime: runtime,
+            imdbRating: imdbRating,
+          );
+
+          await DatabaseHelper.instance.insertMovie(newMovie);
+          await refreshMovieList();
+          setState(() {});
+
+          print('Detalhes do filme adicionado:');
+          print('Título: $title');
+          print('URL do pôster: $posterUrl');
+          // ... imprimir outros detalhes do filme
+        } else {
+          print('Falha ao obter detalhes do filme: $title');
+        }
       } else {
-        print('Falha ao obter URL do poster para o filme: $title');
+        print('Falha ao obter detalhes do filme: $title');
       }
     }
   }
@@ -124,28 +159,45 @@ class _MovieListState extends State<MovieList> {
                       Movie movie = snapshot.data![index];
                       return Column(
                         children: [
-                          ListTile(
-                            leading: Image.network(
-                              (movie.posterUrl != 'N/A')
-                                  ? movie.posterUrl!
-                                  : 'https://m.media-amazon.com/images/M/MV5BNTNiOWJjMjYtYWFlYS00OGFkLTlhMDktNjQ5ZGViYTYyMTY4XkEyXkFqcGdeQXVyNTkyNjA2MTQ@._V1_SX300.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                            title: Text(movie.title),
-                            trailing: Checkbox(
-                              side: BorderSide(color: Colors.cyan, width: 2),
-                              activeColor: Colors.cyan[900],
-                              value: movie.watched,
-                              onChanged: (value) async {
-                                movie.watched = value!;
-                                await DatabaseHelper.instance
-                                    .updateMovie(movie);
-                                setState(() {});
-                              },
-                            ),
-                            onLongPress: () async {
-                              await _confirmarExclusao(movie.id!);
+                          GestureDetector(
+                            onDoubleTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MovieDetailsScreen(
+                                    movie: movie,
+                                  ),
+                                ),
+                              );
                             },
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Image.network(
+                                    (movie.posterUrl != 'N/A')
+                                        ? movie.posterUrl!
+                                        : 'https://m.media-amazon.com/images/M/MV5BNTNiOWJjMjYtYWFlYS00OGFkLTlhMDktNjQ5ZGViYTYyMTY4XkEyXkFqcGdeQXVyNTkyNjA2MTQ@._V1_SX300.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
+                                  title: Text(movie.title),
+                                  trailing: Checkbox(
+                                    side: BorderSide(
+                                        color: Colors.cyan, width: 2),
+                                    activeColor: Colors.cyan[900],
+                                    value: movie.watched,
+                                    onChanged: (value) async {
+                                      movie.watched = value!;
+                                      await DatabaseHelper.instance
+                                          .updateMovie(movie);
+                                      setState(() {});
+                                    },
+                                  ),
+                                  onLongPress: () async {
+                                    await _confirmarExclusao(movie.id!);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(
                             height: 10,

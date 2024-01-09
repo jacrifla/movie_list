@@ -18,13 +18,14 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'movies_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDatabase,
     );
   }
 
   Future<void> _createDatabase(Database db, int version) async {
-    await db.execute('''
+    if (version == 1) {
+      await db.execute('''
       CREATE TABLE movies (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
@@ -32,6 +33,19 @@ class DatabaseHelper {
         posterUrl TEXT
       )
     ''');
+    } else if (version == 2) {
+      // Adiciona as novas colunas à tabela existente
+      await db.execute('''
+      ALTER TABLE movies
+      ADD COLUMN released TEXT,
+      ADD COLUMN genre TEXT,
+      ADD COLUMN director TEXT,
+      ADD COLUMN plot TEXT,
+      ADD COLUMN awards TEXT,
+      ADD COLUMN runtime TEXT,
+      ADD COLUMN imdbRating TEXT
+    ''');
+    }
   }
 
   Future<int> insertMovie(Movie movie) async {
@@ -51,8 +65,23 @@ class DatabaseHelper {
 
   Future<int> updateMovie(Movie movie) async {
     Database db = await instance.database;
-    return await db.update('movies', movie.toMap(),
-        where: 'id = ?', whereArgs: [movie.id]);
+    return await db.update(
+      'movies',
+      movie.toMap(),
+      where: 'id = ?',
+      whereArgs: [movie.id],
+    );
+  }
+
+  Future<Movie> getMovieById(int id) async {
+    Database db = await instance.database;
+    List<Map<String, dynamic>> maps =
+        await db.query('movies', where: 'id = ?', whereArgs: [id], limit: 1);
+
+    if (maps.isNotEmpty) {
+      return Movie.fromMap(maps.first);
+    }
+    throw Exception('Movie not found');
   }
 
   Future<int> deleteMovie(int id) async {
