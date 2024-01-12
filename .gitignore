@@ -48,3 +48,4 @@ app.*.map.json
 !/lib/**
 !.gitignore
 !readme.md
+!pubspec.yaml
