@@ -153,7 +153,7 @@ class _MovieListState extends State<MovieList> {
               : Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 80),
                   child: ListView.builder(
-                    itemCount: snapshot.data!.length,
+                    itemCount: snapshot.data?.length ?? 0,
                     itemBuilder: (context, index) {
                       Movie movie = snapshot.data![index];
                       return Column(

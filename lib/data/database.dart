@@ -18,7 +18,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'movies_database.db');
     return await openDatabase(
       path,
-      version: 2,
+      version: 1,
       onCreate: _createDatabase,
     );
   }
@@ -30,20 +30,16 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         watched INTEGER,
-        posterUrl TEXT
+        posterUrl TEXT,
+        released TEXT,
+        genre TEXT,
+        director TEXT,
+        plot TEXT,
+        awards TEXT,
+        runtime TEXT,
+        imdbRating TEXT,
+        rating REAL
       )
-    ''');
-    } else if (version == 2) {
-      // Adiciona as novas colunas à tabela existente
-      await db.execute('''
-      ALTER TABLE movies
-      ADD COLUMN released TEXT,
-      ADD COLUMN genre TEXT,
-      ADD COLUMN director TEXT,
-      ADD COLUMN plot TEXT,
-      ADD COLUMN awards TEXT,
-      ADD COLUMN runtime TEXT,
-      ADD COLUMN imdbRating TEXT
     ''');
     }
   }
@@ -111,5 +107,26 @@ class DatabaseHelper {
   Future<void> deleteAllMovies() async {
     Database db = await instance.database;
     await db.delete('movies');
+  }
+
+  Future<int> insertOrUpdateMovie(Movie movie) async {
+    Database db = await instance.database;
+    if (movie.id != null) {
+      return await db.update('movies', movie.toMap(),
+          where: 'id = ?', whereArgs: [movie.id]);
+    } else {
+      // Se o filme não existe
+      return await db.insert('movies', movie.toMap());
+    }
+  }
+
+  Future<int> updateMovieRating(int id, double rating) async {
+    Database db = await instance.database;
+    return await db.update(
+      'movies',
+      {'rating': rating},
+      where: 'id =?',
+      whereArgs: [id],
+    );
   }
 }

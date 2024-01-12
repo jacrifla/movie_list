@@ -1,12 +1,21 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
 import 'package:flutter/material.dart';
+import 'package:save_movies/data/database.dart';
 import 'package:save_movies/models/movie.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../widget/build_detail.dart';
 
-class MovieDetailsScreen extends StatelessWidget {
+class MovieDetailsScreen extends StatefulWidget {
   final Movie movie;
 
   const MovieDetailsScreen({Key? key, required this.movie}) : super(key: key);
+
+  @override
+  _MovieDetailsScreenState createState() => _MovieDetailsScreenState();
+}
+
+class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  double currentRating = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class MovieDetailsScreen extends StatelessWidget {
               children: [
                 Center(
                   child: Image.network(
-                    '${movie.posterUrl}',
+                    '${widget.movie.posterUrl}',
                     width: 300,
                     height: 450,
                     fit: BoxFit.cover,
@@ -32,45 +41,45 @@ class MovieDetailsScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 Center(
                   child: Text(
-                    '${movie.title}',
+                    '${widget.movie.title}',
                     style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Center(
                   child: RatingBar.builder(
+                      initialRating: widget.movie.rating ?? 0.0,
                       itemBuilder: (context, _) => Icon(
                             Icons.star,
                             color: Colors.amber,
                           ),
-                      onRatingUpdate: (rating) {
-                        print('Rating: $rating');
-                      }),
+                      onRatingUpdate: onRatingUpdate),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildDetail(
-                        'Director:', movie.director ?? 'Not available'),
-                    _buildDetail('Genre:', movie.genre ?? 'Not available'),
+                    buildDetail(
+                        'Director:', widget.movie.director ?? 'Not available',
+                        alignment: CrossAxisAlignment.start),
+                    buildDetail(
+                        'Genre:', widget.movie.genre ?? 'Not available'),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildDetail('Runtime:', movie.runtime ?? 'Not available'),
-                    _buildDetail(
-                        'Released:', movie.released ?? 'Not available'),
+                    buildDetail(
+                        'Runtime:', widget.movie.runtime ?? 'Not available',
+                        alignment: CrossAxisAlignment.start),
+                    buildDetail(
+                        'Released:', widget.movie.released ?? 'Not available'),
+                    buildDetail('IMDb Rating:',
+                        widget.movie.imdbRating ?? 'Not available'),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildDetail('Awards:', movie.awards ?? 'Not available'),
-                    _buildDetail(
-                        'IMDb Rating:', movie.imdbRating ?? 'Not available'),
-                  ],
-                ),
-                _buildDetail('Plot:', movie.plot ?? 'Not available'),
+                buildDetail('Awards:', widget.movie.awards ?? 'Not available',
+                    alignment: CrossAxisAlignment.start),
+                buildDetail('Plot:', widget.movie.plot ?? 'Not available',
+                    alignment: CrossAxisAlignment.start),
               ],
             ),
           ),
@@ -79,26 +88,17 @@ class MovieDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetail(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        SizedBox(height: 12),
-      ],
-    );
+  Future<void> onRatingUpdate(double rating) async {
+    print('Rating: $rating');
+    if (widget.movie.rating != rating) {
+      setState(() {
+        currentRating = rating;
+        widget.movie.rating = rating;
+      });
+      await DatabaseHelper.instance.updateMovieRating(
+        widget.movie.id!,
+        rating,
+      );
+    }
   }
 }
