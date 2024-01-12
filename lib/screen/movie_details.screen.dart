@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
 import 'package:flutter/material.dart';
 import 'package:save_movies/models/movie.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
   final Movie movie;
@@ -34,6 +35,16 @@ class MovieDetailsScreen extends StatelessWidget {
                     '${movie.title}',
                     style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                   ),
+                ),
+                Center(
+                  child: RatingBar.builder(
+                      itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                      onRatingUpdate: (rating) {
+                        print('Rating: $rating');
+                      }),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
