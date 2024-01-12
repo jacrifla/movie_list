@@ -10,6 +10,7 @@ class Movie {
   String? awards;
   String? runtime;
   String? imdbRating;
+  double? rating;
 
   Movie({
     this.id,
@@ -23,6 +24,7 @@ class Movie {
     this.awards,
     this.runtime,
     this.imdbRating,
+    this.rating,
   });
 
   Map<String, dynamic> toMap() {
@@ -38,6 +40,7 @@ class Movie {
       'awards': awards,
       'runtime': runtime,
       'imdbRating': imdbRating,
+      'rating': rating,
     };
   }
 
@@ -54,6 +57,7 @@ class Movie {
       awards: map['awards'],
       runtime: map['runtime'],
       imdbRating: map['imdbRating'],
+      rating: map['rating'],
     );
   }
 }
