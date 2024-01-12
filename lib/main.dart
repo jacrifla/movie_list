@@ -7,16 +7,6 @@ void main() {
   runApp(const MyApp());
 }
 
-// void main() {
-//   WidgetsFlutterBinding
-//       .ensureInitialized(); // Garante que o Flutter esteja inicializado
-
-//   // Chame o método para deletar todos os filmes depois de runApp()
-//   runApp(const MyApp());
-//   DatabaseHelper.instance
-//       .deleteAllMovies(); // Certifique-se de chamar após runApp()
-// }
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 

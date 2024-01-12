@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:save_movies/data/database.dart';
 import 'package:save_movies/models/movie.dart';
@@ -89,7 +89,6 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Future<void> onRatingUpdate(double rating) async {
-    print('Rating: $rating');
     if (widget.movie.rating != rating) {
       setState(() {
         currentRating = rating;

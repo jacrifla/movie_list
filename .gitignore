@@ -49,3 +49,5 @@ app.*.map.json
 !.gitignore
 !readme.md
 !pubspec.yaml
+!/assets/
+!/assets/**
