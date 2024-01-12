@@ -39,27 +39,27 @@ class MovieDetailsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildDetail(
-                        'Director:', movie.director ?? 'Não disponível'),
-                    _buildDetail('Genre:', movie.genre ?? 'Não disponível'),
+                        'Director:', movie.director ?? 'Not available'),
+                    _buildDetail('Genre:', movie.genre ?? 'Not available'),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildDetail('Runtime:', movie.runtime ?? 'Não disponível'),
+                    _buildDetail('Runtime:', movie.runtime ?? 'Not available'),
                     _buildDetail(
-                        'Released:', movie.released ?? 'Não disponível'),
+                        'Released:', movie.released ?? 'Not available'),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildDetail('Awards:', movie.awards ?? 'Não disponível'),
+                    _buildDetail('Awards:', movie.awards ?? 'Not available'),
                     _buildDetail(
-                        'IMDb Rating:', movie.imdbRating ?? 'Não disponível'),
+                        'IMDb Rating:', movie.imdbRating ?? 'Not available'),
                   ],
                 ),
-                _buildDetail('Plot:', movie.plot ?? 'Não disponível'),
+                _buildDetail('Plot:', movie.plot ?? 'Not available'),
               ],
             ),
           ),

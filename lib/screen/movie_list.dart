@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:save_movies/screen/movie_details.screen.dart';
 import '../data/database.dart';
@@ -39,7 +38,7 @@ class _MovieListState extends State<MovieList> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Aviso'),
+            title: Text('Warning'),
             content: Text("This movie is already on the list."),
             actions: <Widget>[
               TextButton(
@@ -108,8 +107,8 @@ class _MovieListState extends State<MovieList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmar exclusão'),
-          content: Text('Você tem certeza que deseja excluir este filme?'),
+          title: Text('Confirm deletion'),
+          content: Text('Are you sure you want to delete this movie?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -123,7 +122,7 @@ class _MovieListState extends State<MovieList> {
                 await refreshMovieList();
                 Navigator.of(context).pop();
               },
-              child: Text('Excluir'),
+              child: Text('Remove'),
             ),
           ],
         );
