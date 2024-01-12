@@ -1,5 +1,4 @@
-// ignore_for_file: prefer_const_constructors
-
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
 import 'package:flutter/material.dart';
 import 'package:save_movies/models/movie.dart';
 
@@ -12,7 +11,7 @@ class MovieDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalhes do Filme'),
+        title: Text('Film Details'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -40,27 +39,27 @@ class MovieDetailsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildDetail(
-                        'Diretor:', movie.director ?? 'Não disponível'),
-                    _buildDetail('Gênero:', movie.genre ?? 'Não disponível'),
+                        'Director:', movie.director ?? 'Não disponível'),
+                    _buildDetail('Genre:', movie.genre ?? 'Não disponível'),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildDetail('Duração:', movie.runtime ?? 'Não disponível'),
+                    _buildDetail('Runtime:', movie.runtime ?? 'Não disponível'),
                     _buildDetail(
-                        'Lançado:', movie.released ?? 'Não disponível'),
+                        'Released:', movie.released ?? 'Não disponível'),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildDetail('Prêmios:', movie.awards ?? 'Não disponível'),
-                    _buildDetail('Avaliação do IMDb:',
-                        movie.imdbRating ?? 'Não disponível'),
+                    _buildDetail('Awards:', movie.awards ?? 'Não disponível'),
+                    _buildDetail(
+                        'IMDb Rating:', movie.imdbRating ?? 'Não disponível'),
                   ],
                 ),
-                _buildDetail('Enredo:', movie.plot ?? 'Não disponível'),
+                _buildDetail('Plot:', movie.plot ?? 'Não disponível'),
               ],
             ),
           ),
