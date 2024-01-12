@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:save_movies/data/database.dart';
 import 'package:save_movies/models/movie.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:save_movies/utils/string_utils.dart';
 import '../widget/build_detail.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
@@ -41,7 +42,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                 SizedBox(height: 20),
                 Center(
                   child: Text(
-                    '${widget.movie.title}',
+                    '${toCamelCase(widget.movie.title)}',
                     style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                   ),
                 ),

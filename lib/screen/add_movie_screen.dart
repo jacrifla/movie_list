@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../data/database.dart';
 import '../models/movie.dart';
+import '../utils/string_utils.dart';
 
 class AddMovieScreen extends StatelessWidget {
   final TextEditingController _titleController = TextEditingController();
@@ -11,7 +12,9 @@ class AddMovieScreen extends StatelessWidget {
 
   void _addMovie(BuildContext context) async {
     if (_titleController.text.isNotEmpty) {
-      String title = _titleController.text;
+      String originalTitle = _titleController.text;
+
+      String title = toCamelCase(originalTitle);
 
       Movie newMovie = Movie(title: title, watched: false);
 

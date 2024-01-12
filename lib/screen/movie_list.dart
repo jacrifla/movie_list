@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:save_movies/screen/movie_details.screen.dart';
+import 'package:save_movies/utils/string_utils.dart';
 import '../data/database.dart';
 import '../models/movie.dart';
 import '../services/omdb_api_service.dart';
@@ -178,7 +179,7 @@ class _MovieListState extends State<MovieList> {
                                         : 'https://m.media-amazon.com/images/M/MV5BNTNiOWJjMjYtYWFlYS00OGFkLTlhMDktNjQ5ZGViYTYyMTY4XkEyXkFqcGdeQXVyNTkyNjA2MTQ@._V1_SX300.jpg',
                                     fit: BoxFit.cover,
                                   ),
-                                  title: Text(movie.title),
+                                  title: Text(toCamelCase(movie.title)),
                                   trailing: Checkbox(
                                     side: BorderSide(
                                         color: Colors.cyan, width: 2),
