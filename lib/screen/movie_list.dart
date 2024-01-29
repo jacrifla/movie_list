@@ -39,14 +39,31 @@ class _MovieListState extends State<MovieList> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Warning'),
-            content: Text("This movie is already on the list."),
+            title: Text(
+              'Warning',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.cyan[900], fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              "This movie is already on the list.",
+              textAlign: TextAlign.center,
+            ),
             actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.cyan,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             ],
           );
@@ -108,22 +125,55 @@ class _MovieListState extends State<MovieList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm deletion'),
-          content: Text('Are you sure you want to delete this movie?'),
+          title: Text(
+            'Confirm deletion',
+            textAlign: TextAlign.center,
+            style:
+                TextStyle(color: Colors.cyan[900], fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'Are you sure you want to delete this movie?',
+            style: TextStyle(color: Colors.cyan[900]),
+          ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                await DatabaseHelper.instance.deleteMovieById(movieId);
-                await refreshMovieList();
-                Navigator.of(context).pop();
-              },
-              child: Text('Remove'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.cyan,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await DatabaseHelper.instance.deleteMovieById(movieId);
+                    await refreshMovieList();
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.cyan,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: Text(
+                    'Remove',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -137,6 +187,7 @@ class _MovieListState extends State<MovieList> {
       future: movies,
       builder: (context, snapshot) {
         return Scaffold(
+          backgroundColor: Colors.cyan[100],
           appBar: AppBar(
             title: Text(
               'Movie List',
@@ -172,36 +223,50 @@ class _MovieListState extends State<MovieList> {
                             },
                             child: Column(
                               children: [
-                                ListTile(
-                                  leading: Image.network(
-                                    (movie.posterUrl != 'N/A')
-                                        ? movie.posterUrl!
-                                        : 'https://m.media-amazon.com/images/M/MV5BNTNiOWJjMjYtYWFlYS00OGFkLTlhMDktNjQ5ZGViYTYyMTY4XkEyXkFqcGdeQXVyNTkyNjA2MTQ@._V1_SX300.jpg',
-                                    fit: BoxFit.cover,
-                                  ),
-                                  title: Text(toCamelCase(movie.title)),
-                                  trailing: Checkbox(
-                                    side: BorderSide(
-                                        color: Colors.cyan, width: 2),
-                                    activeColor: Colors.cyan[900],
-                                    value: movie.watched,
-                                    onChanged: (value) async {
-                                      movie.watched = value!;
-                                      await DatabaseHelper.instance
-                                          .updateMovie(movie);
-                                      setState(() {});
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: 10, right: 10, top: 5, bottom: 5),
+                                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(5),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ]),
+                                  child: ListTile(
+                                    leading: Image.network(
+                                      (movie.posterUrl != 'N/A')
+                                          ? movie.posterUrl!
+                                          : 'https://m.media-amazon.com/images/M/MV5BNTNiOWJjMjYtYWFlYS00OGFkLTlhMDktNjQ5ZGViYTYyMTY4XkEyXkFqcGdeQXVyNTkyNjA2MTQ@._V1_SX300.jpg',
+                                      fit: BoxFit.cover,
+                                      width: 50,
+                                    ),
+                                    title: Text(toCamelCase(movie.title)),
+                                    trailing: Checkbox(
+                                      side: BorderSide(
+                                          color: Colors.cyan, width: 2),
+                                      activeColor: Colors.cyan[900],
+                                      value: movie.watched,
+                                      onChanged: (value) async {
+                                        movie.watched = value!;
+                                        await DatabaseHelper.instance
+                                            .updateMovie(movie);
+                                        setState(() {});
+                                      },
+                                    ),
+                                    onLongPress: () async {
+                                      await _confirmarExclusao(movie.id!);
                                     },
                                   ),
-                                  onLongPress: () async {
-                                    await _confirmarExclusao(movie.id!);
-                                  },
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          )
                         ],
                       );
                     },
@@ -216,30 +281,78 @@ class _MovieListState extends State<MovieList> {
                   builder: (BuildContext context) {
                     late String newMovieTitle;
                     return AlertDialog(
-                      title: Text('Add Movie'),
+                      title: Text(
+                        'Add Movie',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.cyan[900],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       content: TextField(
                         onChanged: (value) {
                           newMovieTitle = value;
                         },
                         decoration: InputDecoration(
+                          border: OutlineInputBorder(),
                           hintText: 'Enter movie title...',
+                          hintStyle: TextStyle(
+                            color: Colors.cyan[500],
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 1, 157, 177),
+                                width: 2.0),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: const Color.fromARGB(255, 0, 188, 212),
+                                width: 1.0),
+                          ),
                         ),
                       ),
                       actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            if (newMovieTitle.isNotEmpty) {
-                              _addMovie(newMovieTitle);
-                            }
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('Add'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.cyan[200],
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                if (newMovieTitle.isNotEmpty) {
+                                  _addMovie(newMovieTitle);
+                                }
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'Add',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.cyan[700],
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     );
