@@ -104,4 +104,14 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+
+  Future<int> updateMovieRating(int id, double rating) async {
+    Database db = await instance.database;
+    return await db.update(
+      tableMovies,
+      {'rating': rating},
+      where: '$columnId =?',
+      whereArgs: [id],
+    );
+  }
 }
