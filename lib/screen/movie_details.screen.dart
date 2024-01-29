@@ -21,7 +21,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.cyan,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           'Film Details',
           style: TextStyle(
@@ -32,64 +34,79 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         backgroundColor: Colors.cyan,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Image.network(
-                    '${widget.movie.posterUrl}',
-                    width: 300,
-                    height: 450,
-                    fit: BoxFit.cover,
+      body: Container(
+        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(2, 1),
+                blurRadius: 3,
+              ),
+            ],
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(color: Colors.black12),
+            color: Colors.white),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Image.network(
+                      '${widget.movie.posterUrl}',
+                      width: 300,
+                      height: 450,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    '${toCamelCase(widget.movie.title)}',
-                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                  SizedBox(height: 20),
+                  Center(
+                    child: Text(
+                      '${toCamelCase(widget.movie.title)}',
+                      style:
+                          TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Center(
-                  child: RatingBar.builder(
-                      initialRating: widget.movie.rating ?? 0.0,
-                      itemBuilder: (context, _) => Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                      onRatingUpdate: onRatingUpdate),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    buildDetail(
-                        'Director:', widget.movie.director ?? 'Not available',
-                        alignment: CrossAxisAlignment.start),
-                    buildDetail(
-                        'Genre:', widget.movie.genre ?? 'Not available'),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    buildDetail(
-                        'Runtime:', widget.movie.runtime ?? 'Not available',
-                        alignment: CrossAxisAlignment.start),
-                    buildDetail(
-                        'Released:', widget.movie.released ?? 'Not available'),
-                    buildDetail('IMDb Rating:',
-                        widget.movie.imdbRating ?? 'Not available'),
-                  ],
-                ),
-                buildDetail('Awards:', widget.movie.awards ?? 'Not available',
-                    alignment: CrossAxisAlignment.start),
-                buildDetail('Plot:', widget.movie.plot ?? 'Not available',
-                    alignment: CrossAxisAlignment.start),
-              ],
+                  Center(
+                    child: RatingBar.builder(
+                        initialRating: widget.movie.rating ?? 0.0,
+                        itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                        onRatingUpdate: onRatingUpdate),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      buildDetail(
+                          'Director:', widget.movie.director ?? 'Not available',
+                          alignment: CrossAxisAlignment.start),
+                      buildDetail(
+                          'Genre:', widget.movie.genre ?? 'Not available'),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      buildDetail(
+                          'Runtime:', widget.movie.runtime ?? 'Not available',
+                          alignment: CrossAxisAlignment.start),
+                      buildDetail('Released:',
+                          widget.movie.released ?? 'Not available'),
+                      buildDetail('IMDb Rating:',
+                          widget.movie.imdbRating ?? 'Not available'),
+                    ],
+                  ),
+                  buildDetail('Awards:', widget.movie.awards ?? 'Not available',
+                      alignment: CrossAxisAlignment.start),
+                  buildDetail('Plot:', widget.movie.plot ?? 'Not available',
+                      alignment: CrossAxisAlignment.start),
+                ],
+              ),
             ),
           ),
         ),
