@@ -35,40 +35,7 @@ class _MovieListState extends State<MovieList> {
         movies.any((movie) => movie.title.toLowerCase() == title.toLowerCase());
 
     if (filmeExiste) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              'Warning',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.cyan[900], fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              "This movie is already on the list.",
-              textAlign: TextAlign.center,
-            ),
-            actions: <Widget>[
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: TextButton.styleFrom(
-                      backgroundColor: Colors.cyan,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  child: Text(
-                    'OK',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      );
+      _showSimpleDialog('Warning', 'This movie is already on the list.');
     } else {
       Map<String, dynamic>? movieDetails =
           await OmdbApiService('e5f48ed3').getMovieDetailsAll(title);
@@ -106,42 +73,124 @@ class _MovieListState extends State<MovieList> {
           await DatabaseHelper.instance.insertMovie(newMovie);
           await refreshMovieList();
           setState(() {});
-
-          print('Detalhes do filme adicionado:');
-          print('Título: $title');
-          print('URL do pôster: $posterUrl');
-          // ... imprimir outros detalhes do filme
         } else {
-          print('Falha ao obter detalhes do filme: $title');
+          _showFailureDialog(title);
         }
       } else {
-        print('Falha ao obter detalhes do filme: $title');
+        _showFailureDialog(title);
       }
     }
   }
 
-  Future<void> _confirmarExclusao(int movieId) async {
-    return showDialog(
+  Future<void> _showAddMovieDialog() async {
+    late String newMovieTitle;
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Add Movie',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.cyan[900],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: TextField(
+              onChanged: (value) {
+                newMovieTitle = value;
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Movie title',
+                labelStyle: TextStyle(
+                  color: Colors.cyan[500],
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Color.fromARGB(255, 1, 157, 177), width: 2.0),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: const Color.fromARGB(255, 0, 188, 212),
+                      width: 1.0),
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      if (newMovieTitle.isNotEmpty) {
+                        _addMovie(newMovieTitle);
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.cyan[700],
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Text(
+                      'Add',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.cyan[200],
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<void> _showSimpleDialog(String title, String content,
+      {VoidCallback? onActionPressed}) async {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.red[900],
           title: Text(
-            'Confirm deletion',
+            title,
             textAlign: TextAlign.center,
-            style:
-                TextStyle(color: Colors.cyan[900], fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           content: Text(
-            'Are you sure you want to delete this movie?',
-            style: TextStyle(color: Colors.cyan[900]),
+            content,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
+          actions: [
+            Center(
+              child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    if (onActionPressed != null) {
+                      onActionPressed();
+                    }
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.cyan,
@@ -149,34 +198,92 @@ class _MovieListState extends State<MovieList> {
                         borderRadius: BorderRadius.circular(10)),
                   ),
                   child: Text(
-                    'Cancelar',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await DatabaseHelper.instance.deleteMovieById(movieId);
-                    await refreshMovieList();
-                    Navigator.of(context).pop();
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.cyan,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: Text(
-                    'Remove',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  )),
+            )
           ],
         );
+      },
+    );
+  }
+
+  Future<void> _showConfirmationDialog(
+      String title, String content, VoidCallback onConfirm) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.cyan[900],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(
+              content,
+              style: TextStyle(
+                color: Colors.cyan[900],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.cyan,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      onConfirm();
+                      Navigator.of(context).pop();
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.cyan,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ],
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> _showFailureDialog(String title) async {
+    _showSimpleDialog('Failed to get movie details',
+        'An error occurred while trying to get details for the movie $title');
+  }
+
+  Future<void> _confirmarExclusao(int movieId) async {
+    _showConfirmationDialog(
+      'Confirm deletion',
+      'Are you sure you want to delete this movie?',
+      () async {
+        await DatabaseHelper.instance.deleteMovie(movieId);
+        await refreshMovieList();
       },
     );
   }
@@ -276,88 +383,7 @@ class _MovieListState extends State<MovieList> {
             padding: const EdgeInsets.all(8.0),
             child: FloatingActionButton.extended(
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    late String newMovieTitle;
-                    return AlertDialog(
-                      title: Text(
-                        'Add Movie',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.cyan[900],
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      content: TextField(
-                        onChanged: (value) {
-                          newMovieTitle = value;
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter movie title...',
-                          hintStyle: TextStyle(
-                            color: Colors.cyan[500],
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 1, 157, 177),
-                                width: 2.0),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: const Color.fromARGB(255, 0, 188, 212),
-                                width: 1.0),
-                          ),
-                        ),
-                      ),
-                      actions: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.cyan[200],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                if (newMovieTitle.isNotEmpty) {
-                                  _addMovie(newMovieTitle);
-                                }
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'Add',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.cyan[700],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                );
+                _showAddMovieDialog();
               },
               label: Text(
                 'Add Movie',
