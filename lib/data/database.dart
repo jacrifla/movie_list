@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import '../models/movie.dart';
 
 class DatabaseHelper {
-  // Constantes para os nomes das colunas
+// Constantes para os nomes das colunas
   static const String tableMovies = 'movies';
   static const String columnId = 'id';
   static const String columnTitle = 'title';
@@ -96,74 +96,11 @@ class DatabaseHelper {
     );
   }
 
-  Future<Movie> getMovieById(int id) async {
-    Database db = await instance.database;
-    List<Map<String, dynamic>> maps = await db.query(tableMovies,
-        where: '$columnId = ?', whereArgs: [id], limit: 1);
-
-    if (maps.isNotEmpty) {
-      return Movie.fromMap(maps.first);
-    }
-    throw Exception('Movie not found');
-  }
-
-  Future<int> deleteMovie(int id) async {
-    Database db = await instance.database;
-    return await db
-        .delete(tableMovies, where: '$columnId = ?', whereArgs: [id]);
-  }
-
-  Future<bool> isMovieAlreadySaved(String title) async {
-    Database db = await instance.database;
-    List<Map<String, dynamic>> result = await db.query(
-      tableMovies,
-      where: 'title = ?',
-      whereArgs: [title],
-    );
-    return result.isNotEmpty;
-  }
-
-  Future<void> deleteMovieById(int id) async {
+  Future<void> deleteMovie(int id) async {
     Database db = await instance.database;
     await db.delete(
       tableMovies,
       where: '$columnId = ?',
-      whereArgs: [id],
-    );
-  }
-
-  Future<void> deleteAllMovies() async {
-    Database db = await instance.database;
-    await db.delete(tableMovies);
-  }
-
-  Future<int> insertOrUpdateMovie(Movie movie) async {
-    Database db = await instance.database;
-    if (movie.id != null) {
-      return await db.update(tableMovies, movie.toMap(),
-          where: '$columnId = ?', whereArgs: [movie.id]);
-    } else {
-      // Se o filme não existe
-      return await db.insert(tableMovies, movie.toMap());
-    }
-  }
-
-  Future<int> updateMovieRating(int id, double rating) async {
-    Database db = await instance.database;
-    return await db.update(
-      tableMovies,
-      {'rating': rating},
-      where: '$columnId =?',
-      whereArgs: [id],
-    );
-  }
-
-  Future<int> updateMovieWatched(int id, bool watched) async {
-    Database db = await instance.database;
-    return await db.update(
-      tableMovies,
-      {'watched': watched ? 1 : 0},
-      where: '$columnId =?',
       whereArgs: [id],
     );
   }
