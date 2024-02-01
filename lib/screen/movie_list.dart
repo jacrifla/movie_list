@@ -379,8 +379,8 @@ class _MovieListState extends State<MovieList> {
                     },
                   ),
                 ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.all(8.0),
+          floatingActionButton: SizedBox(
+            width: 350,
             child: FloatingActionButton.extended(
               onPressed: () {
                 _showAddMovieDialog();
@@ -388,9 +388,10 @@ class _MovieListState extends State<MovieList> {
               label: Text(
                 'Add Movie',
                 style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 19,
+                ),
               ),
               icon: Icon(
                 Icons.add,
