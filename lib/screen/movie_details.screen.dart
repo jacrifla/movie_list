@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations, library_private_types_in_public_api
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations, library_private_types_in_public_api, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:save_movies/data/database.dart';
 import 'package:save_movies/models/movie.dart';
